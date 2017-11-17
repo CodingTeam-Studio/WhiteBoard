@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>MiniDoodle</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="./css/style.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-    <script src="./js/main.js"></script>
+  <title>在线绘图</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <script src="./js/main.js"></script>
 </head>
+
 <body>
-<canvas id="drawing"></canvas>
+  <canvas id="background" style="background:#ffffff;"></canvas>
+  <canvas id="drawing"></canvas>
+  <button class="clear" id="clear">清空画板</button>
 </body>
+
 </html>
