@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
 	var constant = {
 		pointSize: 5,
-		minAngleChange: Math.PI / 60,
+		minAngleChange: Math.PI / 180,
 		penSize: 1,
 		color: '#000000',
 		maxLinePointTime: 25
@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		pos_prev: false,
 		pos_turn: false,
 		distance: 0,
-		originTime: false
 	};
 	// get canvas element and create context
 	var clearButton = document.getElementById('clear');
@@ -30,26 +29,40 @@ document.addEventListener("DOMContentLoaded", function() {
 	var socket = io.connect();
 
 	var linePoint = [];
+	var line_history = [];
+	var dot_history = [];
 
 	// draw line received from server
 	socket.on('draw_line', function(data) {
 		var line = data.line;
-		contextBG.strokeStyle = constant.color;
-		contextBG.lineWidth = constant.penSize;
+
 		contextBG.beginPath();
-		contextBG.moveTo(line[0].x * width, line[0].y * height);
-		for (var i = 1; i < line.length; i++) {
-			contextBG.lineTo(line[i].x * width, line[i].y * height);
+		for (i = 0; i < line.length; i++) {
+			line_history.push(line[i]);
+			contextBG.strokeStyle = constant.color;
+			contextBG.lineWidth = constant.penSize;
+			contextBG.moveTo(line[i][0].x, line[i][0].y);
+			for (var j = 1; j < line[i].length; j++) {
+				contextBG.lineTo(line[i][j].x, line[i][j].y);
+			}
 		}
 		contextBG.stroke();
 	});
 
 	socket.on('draw_dot', function(data) {
-		dot(contextBG, data.dot);
+		var dot = data.dot;
+
+		for (var i = 0; i < dot.length; i++) {
+			dot_history.push(dot[i]);
+			dotTo(contextBG, dot[i]);
+		}
+
 	});
 
 	socket.on('clear', function(data) {
 		contextBG.clearRect(0, 0, width, height);
+		line_history = [];
+		dot_history = [];
 	});
 
 	clearButton.onclick = function() {
@@ -66,9 +79,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		mouse.pos_prev = { x: mouse.pos.x, y: mouse.pos.y };
 		mouse.pos_turn = false;
 		mouse.distance = 0;
-		mouse.originTime = new Date().getTime();
 		linePoint = [];
-		linePoint.push({ x: mouse.pos.x / width, y: mouse.pos.y / height });
+		linePoint.push({ x: mouse.pos.x, y: mouse.pos.y });
 	};
 	canvas.onmouseup = function(e) { endLineDraw(); };
 	canvas.onmouseout = function(e) { endLineDraw(); };
@@ -88,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				if (dis <= mouse.distance - constant.pointSize * 2 || hasPenChange(mouse.pos, mouse.pos_prev, mouse.pos_turn)) {
 					mouse.dot = false;
 					line(contextBG, mouse.pos_prev, mouse.pos);
-					linePoint.push({ x: mouse.pos.x / width, y: mouse.pos.y / height });
+					linePoint.push({ x: mouse.pos.x, y: mouse.pos.y });
 					mouse.pos_turn = false;
 					mouse.distance = 0;
 					mouse.pos_prev.x = mouse.pos.x;
@@ -109,17 +121,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		context.clearRect(0, 0, width, height);
 		if (!mouse.pos_turn && mouse.dot) {
-			dot(contextBG, { x: mouse.pos_prev.x / width, y: mouse.pos_prev.y / height });
+			dotTo(contextBG, { x: mouse.pos_prev.x, y: mouse.pos_prev.y });
 			socket.emit('draw_dot', {
-				dot: { x: mouse.pos_prev.x / width, y: mouse.pos_prev.y / height }
+				dot: [{ x: mouse.pos_prev.x, y: mouse.pos_prev.y }]
 			});
 		} else if (distance(mouse.pos, mouse.pos_prev) >= constant.pointSize) {
 			line(contextBG, mouse.pos_prev, mouse.pos);
-			linePoint.push({ x: mouse.pos.x / width, y: mouse.pos.y / height });
+			linePoint.push({ x: mouse.pos.x, y: mouse.pos.y });
 		}
 
 		if (linePoint.length > 1) {
-			socket.emit('draw_line', { line: linePoint });
+			socket.emit('draw_line', { line: [linePoint] });
+			line_history.push(linePoint);
 		}
 	}
 
@@ -155,11 +168,27 @@ document.addEventListener("DOMContentLoaded", function() {
 		context.stroke();
 	}
 
-	function dot(context, dot) {
+	function dotTo(context, dot) {
 		contextBG.fillStyle = constant.color;
 		contextBG.beginPath();
-		contextBG.arc(dot.x * width, dot.y * height, constant.penSize * 1.5, 0, 2 * Math.PI);
+		contextBG.arc(dot.x, dot.y, constant.penSize * 1.5, 0, 2 * Math.PI);
 		contextBG.fill();
+	}
+
+	function redraw() {
+		contextBG.beginPath();
+		for (i = 0; i < line_history.length; i++) {
+			contextBG.strokeStyle = constant.color;
+			contextBG.lineWidth = constant.penSize;
+			contextBG.moveTo(line_history[i][0].x, line_history[i][0].y);
+			for (var j = 1; j < line_history[i].length; j++) {
+				contextBG.lineTo(line_history[i][j].x, line_history[i][j].y);
+			}
+		}
+		contextBG.stroke();
+
+		for (var i = 0; i < dot_history.length; i++)
+			dotTo(contextBG, dot_history[i]);
 	}
 
 	// set canvas to full browser width/height
@@ -170,17 +199,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		background.height = height;
 		canvas.width = width;
 		canvas.height = height;
+		redraw();
 	};
 
-	function loopUpload() {
-		if (linePoint.length > 1 && new Date().getTime() - mouse.originTime >= constant.maxLinePointTime) {
-			linePoint.push({ x: mouse.pos.x / width, y: mouse.pos.y / height });
-			socket.emit('draw_line', { line: linePoint });
-			linePoint = [{ x: mouse.pos.x / width, y: mouse.pos.y / height }];
-			mouse.originTime = new Date().getTime();
-		}
-		setTimeout(loopUpload, constant.maxLinePointTime);
-	}
 	window.onresize();
-	loopUpload();
 });

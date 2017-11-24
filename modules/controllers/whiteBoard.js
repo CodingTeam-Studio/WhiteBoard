@@ -8,20 +8,20 @@ function service(server) {
 
 	io.on('connection', function(socket) {
 
-		for (var i in line_history)
-			socket.emit('draw_line', { line: line_history[i] });
-
-		for (var j in dot_history)
-			socket.emit('draw_dot', { dot: dot_history[j] });
-
+		socket.emit('draw_line', { line: line_history });
+		socket.emit('draw_dot', { dot: dot_history });
 
 		socket.on('draw_line', function(data) {
-			line_history.push(data.line);
+			for (var i = 0; i < data.line.length; i++)
+				line_history.push(data.line[i]);
+
 			socket.broadcast.emit('draw_line', { line: data.line });
 		});
 
 		socket.on('draw_dot', function(data) {
-			dot_history.push(data.dot);
+			for (var i = 0; i < data.dot.length; i++)
+				dot_history.push(data.dot[i]);
+
 			socket.broadcast.emit('draw_dot', { dot: data.dot });
 		});
 
