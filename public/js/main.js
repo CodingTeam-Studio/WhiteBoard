@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		if (linePoint.length > 1) {
 			socket.emit('draw_line' + canvasId, { line: [linePoint] });
-			line_history.push(linePoint);
+			line_history.push(linePoint, mouse.pos);
 		}
 	}
 
