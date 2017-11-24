@@ -201,10 +201,10 @@ document.addEventListener("DOMContentLoaded", function() {
 				if (!mouse.pos_turn)
 					mouse.pos_turn = { x: mouse.pos.x, y: mouse.pos.y };
 
+				mouse.dot = false;
 				if (dis <= mouse.distance - constant.pointSize * 2 || hasPenChange(mouse.pos, mouse.pos_prev, mouse.pos_turn)) {
 					putPoint(mouse.pos.x, mouse.pos.y);
 					line(context, linePoint);
-					mouse.dot = false;
 					mouse.pos_turn = false;
 					mouse.distance = 0;
 					mouse.pos_prev.x = mouse.pos.x;
