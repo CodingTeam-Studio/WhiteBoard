@@ -3,10 +3,10 @@ body, html {
   height: 100%;
   padding: 0;
   margin: 0;
-  cursor: none;
 }
 
 /* Login Page */
+
 .login.page {
   height: 100%;
   width: 100%;
@@ -17,7 +17,6 @@ body, html {
   height: 100px;
   margin-top: -100px;
   position: absolute;
-
   text-align: center;
   top: 50%;
   width: 100%;
@@ -38,11 +37,13 @@ body, html {
 }
 
 /* Canvas Page */
+
 canvas {
   position: absolute;
   display: block;
   padding: 0;
   margin: 0;
+  cursor: none;
 }
 
 .clear {

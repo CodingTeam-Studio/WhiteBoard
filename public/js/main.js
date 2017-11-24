@@ -33,18 +33,21 @@ function fadeOut(element, time) {
 	}, time / 100);
 }
 
-function setCanvasId() {
-	if (event.keyCode === 13)
-		socket.emit("set_id", {
-			id: document.getElementById("canvasIdInput").value
-		});
-}
 
 var socket = io.connect();
 
 var canvasId;
 
 document.addEventListener("DOMContentLoaded", function() {
+	document.getElementById("canvasIdInput").onkeyup = function(e) {
+
+		e = e || window.event;
+		if (e.keyCode === 13) {
+			socket.emit("set_id", {
+				id: document.getElementById("canvasIdInput").value
+			});
+		}
+	};
 	var constant = {
 		minAngleChange: Math.PI / 180,
 		maxDragging: 20,
@@ -63,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		pos: { x: 0, y: 0 },
 		pos_prev: false,
 		pos_turn: false,
+		out: false,
 		distance: 0
 	};
 	// get canvas element and create context
@@ -170,11 +174,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	};
 	canvas.onmouseout = function(e) {
 		mouse.rightClick = false;
+		mouse.out = true;
 		endLineDraw();
 	};
 	canvas.oncontextmenu = function(e) { e.preventDefault(); };
 
 	canvas.onmousemove = function(e) {
+		mouse.out = false;
 		context.clearRect(0, 0, width, height);
 		drawCursor(e.clientX, e.clientY);
 		if (mouse.rightClick) {
@@ -289,6 +295,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
 	function drawCursor(cursorX, cursorY) {
+		if (mouse.out) return;
 		context.save();
 		context.lineWidth = 1;
 		context.beginPath();
