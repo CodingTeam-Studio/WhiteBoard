@@ -40,7 +40,6 @@ var canvasId;
 
 document.addEventListener("DOMContentLoaded", function() {
 	document.getElementById("canvasIdInput").onkeyup = function(e) {
-
 		e = e || window.event;
 		if (e.keyCode === 13) {
 			socket.emit("set_id", {
@@ -50,7 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	};
 	var constant = {
 		minAngleChange: Math.PI / 180,
-		maxDragging: 20,
 		wheelSpeed: 0.01,
 		pointSize: 5,
 		penSize: 1,
@@ -91,10 +89,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	// draw line received from server
 	socket.on('set_id_success', function(data) {
 		canvasId = data.id;
-
-		fadeOut(document.getElementById("loginPage"), 500);
-		fadeIn(document.getElementById("canvasPage"), 500);
-
+		document.getElementById("board").style.display = "block";
+		fadeOut(document.getElementById("form"), 500);
+		fadeIn(document.getElementById("background"), 500);
 		socket.emit('roll_back', {});
 
 		socket.on('draw_line' + canvasId, function(data) {
@@ -185,8 +182,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		drawCursor(e.clientX, e.clientY);
 		if (mouse.rightClick) {
 			if (mouse.pos_prev) {
-				var dx = Math.min(constant.maxDragging, mouse.pos.x - e.clientX);
-				var dy = Math.min(constant.maxDragging, mouse.pos.y - e.clientY);
+				var dx = mouse.pos.x - e.clientX;
+				var dy = mouse.pos.y - e.clientY;
 				constant.offsetX += dx;
 				constant.offsetY += dy;
 				redraw();
@@ -277,7 +274,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		context.lineJoin = "round";
 		context.lineCap = "round";
 		context.beginPath();
-		context.moveTo(points[0].x, points[0].y);
+		context.moveTo(points[0].x - constant.offsetX, points[0].y - constant.offsetY);
 		for (var j = 1; j < points.length; j++)
 			context.lineTo(points[j].x - constant.offsetX, points[j].y - constant.offsetY);
 

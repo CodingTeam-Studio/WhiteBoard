@@ -13,26 +13,27 @@ body, html {
   background-color: #000;
 }
 
-.login.page .form {
+.form {
   height: 100px;
-  margin-top: -100px;
+  margin: 0;
+  padding: 0;
   position: absolute;
   text-align: center;
   top: 50%;
   width: 100%;
 }
 
-.login.page .title {
+.title {
   font-size: 200%;
 }
 
-.login.page .usernameInput {
+.usernameInput {
   font-size: 200%;
   letter-spacing: 3px;
 }
 
-.login.page .title, .login.page .usernameInput {
-  color: #fff;
+.title, .login.page .usernameInput {
+  color: #000;
   font-weight: 100;
 }
 
