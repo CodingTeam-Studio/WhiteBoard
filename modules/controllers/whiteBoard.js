@@ -1,65 +1,36 @@
 var socketIO = require('socket.io');
-var encrypter = require('../utils/encryptor');
 
-var whiteBoard = [];
+var line_history = [];
+var dot_history = [];
 
 function service(server) {
-    var io = socketIO.listen(server);
+	var io = socketIO.listen(server);
 
-    io.on('connection', function(socket) {
-        var canvasId;
+	io.on('connection', function(socket) {
 
-        socket.on('set_id', function(data) {
-            canvasId = encrypter(data.id);
+		socket.emit('draw_line', { line: line_history });
+		socket.emit('draw_dot', { dot: dot_history });
 
-            if (whiteBoard[canvasId] === undefined) {
-                whiteBoard[canvasId] = Object();
-                whiteBoard[canvasId].lineHistory = [];
-                whiteBoard[canvasId].dotHistory = [];
-            }
+		socket.on('draw_line', function(data) {
+			for (var i = 0; i < data.line.length; i++)
+				line_history.push(data.line[i]);
 
-            socket.emit('set_id_success', {
-                id: canvasId
-            });
+			socket.broadcast.emit('draw_line', { line: data.line });
+		});
 
-            socket.on('roll_back', function(data) {
-                socket.emit('draw_dot' + canvasId, {
-                    dot: whiteBoard[canvasId].dotHistory
-                });
+		socket.on('draw_dot', function(data) {
+			for (var i = 0; i < data.dot.length; i++)
+				dot_history.push(data.dot[i]);
 
-                socket.emit('draw_line' + canvasId, {
-                    line: whiteBoard[canvasId].lineHistory
-                });
-            });
+			socket.broadcast.emit('draw_dot', { dot: data.dot });
+		});
 
-            socket.on('draw_dot' + canvasId, function(data) {
-                for (var i = 0; i < data.dot.length; i++) {
-                    whiteBoard[canvasId].dotHistory.push(data.dot[i]);
-                }
-                socket.broadcast.emit('draw_dot' + canvasId, {
-                    dot: data.dot
-                });
-            });
-
-            socket.on('draw_line' + canvasId, function(data) {
-                for (var i = 0; i < data.line.length; i++) {
-                    whiteBoard[canvasId].lineHistory.push(data.line[i]);
-                }
-
-                socket.broadcast.emit('draw_line' + canvasId, {
-                    line: data.line
-                });
-            });
-
-            socket.on('clear' + canvasId, function(data) {
-                whiteBoard[canvasId].lineHistory = [];
-                whiteBoard[canvasId].dotHistory = [];
-                
-                socket.broadcast.emit('clear' + canvasId, {});
-            });
-        });
-
-    });
+		socket.on('clear', function(data) {
+			line_history = [];
+			dot_history = [];
+			socket.broadcast.emit('clear', {});
+		});
+	});
 }
 
 module.exports = service;
