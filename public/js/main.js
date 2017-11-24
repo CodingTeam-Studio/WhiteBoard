@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 	// draw line received from server
-	socket.on('set_id_success' + canvasId, function(data) {
+	socket.on('set_id_success', function(data) {
 		canvasId = data.id;
 
 		fadeOut(document.getElementById("loginPage"), 500);

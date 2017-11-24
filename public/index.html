@@ -2,29 +2,29 @@
 <html>
 
 <head>
-    <title>在线绘图</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="./css/style.css"/>
+  <title>在线绘图</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./css/style.css" />
 </head>
 
 <body>
-<ul>
+  <ul>
     <li id="canvasPage">
-        <canvas id="background" style="background:#ffffff;"></canvas>
-        <canvas id="drawing"></canvas>
-        <button class="clear" id="clear">清空画板</button>
+      <canvas id="background" style="background:#ffffff;"></canvas>
+      <canvas id="drawing"></canvas>
+      <button class="clear" id="clear">清空画板</button>
     </li>
 
     <li id="loginPage" class="login page">
-        <div class="form">
-            <h3 title="title">Please Enter the WhiteBoard ID</h3>
-            <input id="canvasIdInput" class="usernameInput" type="text" maxlength="14" />
-        </div>
+      <div class="form">
+        <h3 title="title">Please Enter the WhiteBoard ID</h3>
+        <input id="canvasIdInput" class="usernameInput" type="text" maxlength="14" />
+      </div>
     </li>
-</ul>
+  </ul>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-<script src="./js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <script src="./js/main.js"></script>
 </body>
 
 </html>
