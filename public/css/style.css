@@ -5,6 +5,38 @@ body, html {
   margin: 0;
 }
 
+/* Login Page */
+.login.page {
+  height: 100%;
+  width: 100%;
+  background-color: #000;
+}
+
+.login.page .form {
+  height: 100px;
+  margin-top: -100px;
+  position: absolute;
+
+  text-align: center;
+  top: 50%;
+  width: 100%;
+}
+
+.login.page .title {
+  font-size: 200%;
+}
+
+.login.page .usernameInput {
+  font-size: 200%;
+  letter-spacing: 3px;
+}
+
+.login.page .title, .login.page .usernameInput {
+  color: #fff;
+  font-weight: 100;
+}
+
+/* Canvas Page */
 canvas {
   position: absolute;
   display: block;
