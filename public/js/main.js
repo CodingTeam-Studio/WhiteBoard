@@ -1,36 +1,36 @@
 function fadeIn(element, time) {
-	if (element.style.opacity === "") {
-		element.style.opacity = 0;
-	}
-	if (element.style.display === "" || element.style.display === 'none') {
-		element.style.display = 'block';
-	}
+    if (element.style.opacity === "") {
+        element.style.opacity = 0;
+    }
+    if (element.style.display === "" || element.style.display === 'none') {
+        element.style.display = 'block';
+    }
 
-	var timer = setInterval(function() {
-		if (element.style.opacity < 1) {
-			element.style.opacity = parseFloat(element.style.opacity) + 0.01;
-		} else {
-			clearInterval(timer);
-		}
-	}, time / 100);
+    var timer = setInterval(function () {
+        if (element.style.opacity < 1) {
+            element.style.opacity = parseFloat(element.style.opacity) + 0.01;
+        } else {
+            clearInterval(timer);
+        }
+    }, time / 100);
 }
 
 function fadeOut(element, time) {
-	if (element.style.opacity === "") {
-		element.style.opacity = 1;
-	}
-	if (element.style.display === "" || element.style.display === 'none') {
-		element.style.display = 'block';
-	}
+    if (element.style.opacity === "") {
+        element.style.opacity = 1;
+    }
+    if (element.style.display === "" || element.style.display === 'none') {
+        element.style.display = 'block';
+    }
 
-	var timer = setInterval(function() {
-		if (element.style.opacity > 0) {
-			element.style.opacity = parseFloat(element.style.opacity) - 0.01;
-		} else {
-			clearInterval(timer);
-			element.style.display = 'none';
-		}
-	}, time / 100);
+    var timer = setInterval(function () {
+        if (element.style.opacity > 0) {
+            element.style.opacity = parseFloat(element.style.opacity) - 0.01;
+        } else {
+            clearInterval(timer);
+            element.style.display = 'none';
+        }
+    }, time / 100);
 }
 
 

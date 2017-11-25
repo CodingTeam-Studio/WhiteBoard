@@ -33,30 +33,30 @@ function service(server) {
 			});
 
 			socket.on('draw_dot' + canvasId, function(data) {
-				for (var i = 0; i < data.dot.length; i++) {
-					whiteBoard[canvasId].dotHistory.push(data.dot[i]);
-				}
-
 				socket.broadcast.emit('draw_dot' + canvasId, {
 					dot: data.dot
 				});
+
+				for (var i = 0; i < data.dot.length; i++) {
+					whiteBoard[canvasId].dotHistory.push(data.dot[i]);
+				}
 			});
 
 			socket.on('draw_line' + canvasId, function(data) {
-				for (var i = 0; i < data.line.length; i++) {
-					whiteBoard[canvasId].lineHistory.push(data.line[i]);
-				}
-
 				socket.broadcast.emit('draw_line' + canvasId, {
 					line: data.line
 				});
+
+				for (var i = 0; i < data.line.length; i++) {
+					whiteBoard[canvasId].lineHistory.push(data.line[i]);
+				}
 			});
 
 			socket.on('clear' + canvasId, function(data) {
+				socket.broadcast.emit('clear' + canvasId, {});
+
 				whiteBoard[canvasId].lineHistory = [];
 				whiteBoard[canvasId].dotHistory = [];
-
-				socket.broadcast.emit('clear' + canvasId, {});
 			});
 		});
 
