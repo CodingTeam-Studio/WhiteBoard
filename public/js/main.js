@@ -201,6 +201,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				if (!mouse.pos_turn)
 					mouse.pos_turn = { x: mouse.pos.x, y: mouse.pos.y };
 
+
 				mouse.dot = false;
 				if (dis <= mouse.distance - constant.pointSize * 2 || hasPenChange(mouse.pos, mouse.pos_prev, mouse.pos_turn)) {
 					putPoint(mouse.pos.x, mouse.pos.y);
@@ -232,6 +233,8 @@ document.addEventListener("DOMContentLoaded", function() {
 				dot: [{ x: mouse.pos_prev.x + constant.offsetX, y: mouse.pos_prev.y + constant.offsetY }]
 			});
 		} else if (!mouse.dot) {
+			contextBG.strokeStyle = constant.color;
+			contextBG.lineWidth = constant.penSize;
 			line(contextBG, linePoint, mouse.pos);
 			putPoint(mouse.pos.x, mouse.pos.y);
 		}
