@@ -232,15 +232,13 @@ document.addEventListener("DOMContentLoaded", function() {
 				dot: [{ x: mouse.pos_prev.x + constant.offsetX, y: mouse.pos_prev.y + constant.offsetY }]
 			});
 		} else if (!mouse.dot) {
-			contextBG.lineWidth = constant.penSize;
-			contextBG.color = constant.color;
 			line(contextBG, linePoint, mouse.pos);
 			putPoint(mouse.pos.x, mouse.pos.y);
 		}
 
 		if (linePoint.length > 1) {
 			socket.emit('draw_line' + canvasId, { line: [linePoint] });
-			line_history.push(linePoint, mouse.pos);
+			line_history.push(linePoint);
 		}
 	}
 
@@ -305,13 +303,14 @@ document.addEventListener("DOMContentLoaded", function() {
 	function redraw() {
 		contextBG.clearRect(0, 0, width, height);
 		contextBG.beginPath();
+		var i;
 		for (i = 0; i < line_history.length; i++) {
 			contextBG.strokeStyle = line_history[i][0].color;
 			contextBG.lineWidth = line_history[i][0].penSize;
 			line(contextBG, line_history[i]);
 		}
 
-		for (var i = 0; i < dot_history.length; i++)
+		for (i = 0; i < dot_history.length; i++)
 			dotTo(contextBG, dot_history[i]);
 	}
 
