@@ -1,13 +1,18 @@
-# node modules
-node_modules/
+# OS X
+#
+.DS_Store
 
-# package-lock.json
-/package-lock.json
-
-# .idea
+# Editors
+#
+.vscode/
 .idea/
 
-# macOS
-.DS_Store
+# node modules
+#
+node_modules/
+
+# package-lock
+#
+/package-lock.json
 
 npm-debug.log

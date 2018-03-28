@@ -1,11 +1,19 @@
 {
-  "name": "WhiteBoard",
-  "version": "0.0.1",
+  "name": "whiteboard",
+  "description": "A multi-user whiteboard platform",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/CodingTeam-Studio"
+  },
+  "license": "GPL-3.0",
   "scripts": {
     "start": "node ./app.js"
   },
   "dependencies": {
     "express": "^4.16.2",
     "socket.io": "^2.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.2"
   }
 }

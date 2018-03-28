@@ -1,13 +1,13 @@
-var express = require('express');
-var http = require('http');
-var service = require('./modules/controllers/whiteBoard');
-var config = require('./modules/constants/config');
+const {port} = require('./modules/constants/config');
+const express = require('express');
+const http = require('http');
+const service = require('./modules/controllers/whiteBoard');
 
-var app = express();
-var server = http.createServer(app);
+const app = express();
+const server = http.createServer(app);
 
 app.use(express.static(__dirname + '/public'));
 
 service(server);
 
-server.listen(config.port);
+server.listen(port);

@@ -1,8 +1,16 @@
-var md5 = require('crypto').createHash('md5');
+const crypto = require('crypto');
 
 function encrypter(content) {
-    // return md5.update(content).digest('hex');
-    return 'hhh'+ content;
+  const md5 = crypto.createHash('md5');
+  const timestamp = new Date()
+    .getTime()
+    .toString(36)
+    .toUpperCase();
+  const sign = `${timestamp}-${content}`;
+
+  md5.update(sign);
+
+  return md5.digest('hex').toUpperCase();
 }
 
 module.exports = encrypter;
