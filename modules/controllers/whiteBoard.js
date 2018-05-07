@@ -1,60 +1,81 @@
-const socketIO = require('socket.io');
-const encrypter = require('../utils/encryptor');
+const socketIO = require("socket.io");
+const encrypter = require("../utils/encryptor");
 
+// 记录各点线位置
 let whiteBoard = [];
 
 function service(server) {
   const io = socketIO.listen(server);
 
-  io.on('connection', function(socket) {
-    socket.on('set_id', function(data) {
+  io.on("connection", function(socket) {
+    socket.on("set_id", function(data) {
       const canvasId = encrypter(data.id);
 
+      // 判断房间是否已存在
       if (whiteBoard[canvasId] === undefined) {
-        whiteBoard[canvasId] = Object();
-        whiteBoard[canvasId].lineHistory = [];
+        whiteBoard[canvasId] = new Object();
         whiteBoard[canvasId].dotHistory = [];
+        whiteBoard[canvasId].lineHistory = [];
       }
 
+      let {dotHistory, lineHistory} = whiteBoard[canvasId];
+
+      // 添加 socket 至对应房间
       socket.join(canvasId);
 
-      socket.emit('set_id_success', {});
+      socket.emit("set_id_success", {});
 
-      socket.on('roll_back', function(data) {
-        socket.emit('draw_dot', {
-          dot: whiteBoard[canvasId].dotHistory
+      socket.on("roll_back", function(data) {
+        socket.emit("draw_dot", {
+          dot: dotHistory
         });
 
-        socket.emit('draw_line', {
-          line: whiteBoard[canvasId].lineHistory
+        socket.emit("draw_line", {
+          line: lineHistory
         });
       });
 
-      socket.on('draw_dot', function(data) {
-        socket.to(canvasId).emit('draw_dot', {
-          dot: data.dot
+      // 绘制点
+      socket.on("draw_dot", function(data) {
+        const {
+          dot,
+          dot: {length}
+        } = data;
+
+        // 在房间进行广播
+        socket.to(canvasId).emit("draw_dot", {
+          dot: dot
         });
 
-        for (let i = 0; i < data.dot.length; i++) {
-          whiteBoard[canvasId].dotHistory.push(data.dot[i]);
+        // 保存至历史记录
+        for (let i = 0; i < length; i++) {
+          dotHistory.push(dot[i]);
         }
       });
 
-      socket.on('draw_line', function(data) {
-        socket.to(canvasId).emit('draw_line', {
-          line: data.line
+      // 绘制线
+      socket.on("draw_line", function(data) {
+        const {
+          line,
+          line: {length}
+        } = data;
+
+        // 在房间进行广播
+        socket.to(canvasId).emit("draw_line", {
+          line: line
         });
 
-        for (let i = 0; i < data.line.length; i++) {
-          whiteBoard[canvasId].lineHistory.push(data.line[i]);
+        // 保存至历史记录
+        for (let i = 0; i < length; i++) {
+          lineHistory.push(line[i]);
         }
       });
 
-      socket.on('clear', function(data) {
-        socket.to(canvasId).emit('clear', {});
-
-        whiteBoard[canvasId].lineHistory = [];
-        whiteBoard[canvasId].dotHistory = [];
+      // 清屏
+      socket.on("clear", function(data) {
+        socket.to(canvasId).emit("clear", {});
+        dotHistory = [];
+        lineHistory = [];
       });
     });
   });

@@ -5,8 +5,13 @@
 ## Build Setup
 ```bash
 # install dependencies
+#
 npm install
 
 # run service
+#
 npm start
+
+# run service in development mode
+npm run dev
 ```
