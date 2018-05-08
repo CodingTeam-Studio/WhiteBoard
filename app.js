@@ -1,13 +1,10 @@
 const {port} = require("./modules/constants/config");
-const express = require("express");
 const http = require("http");
-const service = require("./modules/controllers/whiteBoard");
+const whiteBoard = require("./modules/controllers/whiteBoard");
+const staticFile = require("./modules/controllers/staticFile");
 
-const app = express();
-const server = http.createServer(app);
-
-app.use(express.static(__dirname + "/public"));
-
-service(server);
+const server = http.createServer(staticFile);
 
 server.listen(port);
+
+whiteBoard(server);
