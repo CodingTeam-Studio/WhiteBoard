@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 
-const commonPath = __dirname + "../../../public";
+const commonPath = path.resolve(__dirname, "../../public");
 const mimeType = {
   ".ico": "image/x-icon",
   ".html": "text/html",
